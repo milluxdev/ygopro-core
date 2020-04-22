@@ -3650,8 +3650,12 @@ int32 card::is_can_be_fusion_material(card* fcard, uint32 summon_type) {
 	return TRUE;
 }
 int32 card::is_can_be_synchro_material(card* scard, card* tuner) {
+	effect_set eset1;
 	if(data.type & (TYPE_XYZ | TYPE_LINK))
-		return FALSE;
+		filter_effect(EFFECT_CANBE_SYNCHRO_MATERIAL, &eset1);
+		for(int32 i = 0; i < eset1.size(); ++i)
+			if(!(eset1[i]->get_value(scard)))
+				return FALSE;
 	if(!(get_synchro_type() & TYPE_MONSTER))
 		return FALSE;
 	if(scard && current.location == LOCATION_MZONE && current.controler != scard->current.controler && !is_affected_by_effect(EFFECT_SYNCHRO_MATERIAL))
